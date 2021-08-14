@@ -50,11 +50,11 @@ telephone.addEventListener('keydown', function (event) {
 function deletingInMask(elem) {
 	let value = elem.value;
 	let indexOfCursor = getCaretPos(elem);
-	console.log(indexOfCursor);
+	//console.log(indexOfCursor);
 	let tmpArr = value.split('');
-	console.log(tmpArr);
+	//console.log(tmpArr);
 	if (special4Bool(String(tmpArr[indexOfCursor - 1]))) {
-		console.log(tmpArr[indexOfCursor - 1]);
+		//console.log(tmpArr[indexOfCursor - 1]);
 		//console.log('Not cool');
 		elem.selectionStart = elem.selectionEnd = --indexOfCursor;
 		event.preventDefault();
@@ -87,5 +87,6 @@ function special4Bool(literal) {
 	else if (literal == ')') return true;
 	else if (literal == ' ') return true;
 	else if (literal == '-') return true;
+	else if (literal == '+') return true;
 	else return false;
 }
