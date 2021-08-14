@@ -24,15 +24,14 @@ function replacingUnderscoresWithoutLetters(elem, key) {
 	//if (!bool) let value=tmpvalue.replace(/^\+7\s\(([\d_]{1,3})\)_+\s$/)
 }
 
-telephone.addEventListener('keypress', function (event) {
-	if (
-		event.key == 'ArrowLeft' ||
-		event.key == 'ArrowRight' ||
-		event.key == 'Delete' ||
-		event.key == 'Backspace'
-	)
+telephone.addEventListener('keydown', function (event) {
+	if (event.key == 'ArrowLeft' || event.key == 'ArrowRight')
 		replacingUnderscoresWithoutLetters(this, event.key);
-	else {
+	else if (event.key == 'Backspace') {
+		//console.log('Cool!');
+		event.preventDefault();
+		deletingInMask(this);
+	} else {
 		let bool = /\d/.test(event.key);
 		//console.log(bool);
 		if (bool) {
@@ -47,6 +46,46 @@ telephone.addEventListener('keypress', function (event) {
 	}
 	//console.log(this.value);
 });
-function focusing() {
-	this.selectionStart = this.selectionEnd = 4;
+
+function deletingInMask(elem) {
+	let value = elem.value;
+	let indexOfCursor = getCaretPos(elem);
+	console.log(indexOfCursor);
+	let tmpArr = value.split('');
+	console.log(tmpArr);
+	if (special4Bool(String(tmpArr[indexOfCursor - 1]))) {
+		console.log(tmpArr[indexOfCursor - 1]);
+		//console.log('Not cool');
+		elem.selectionStart = elem.selectionEnd = --indexOfCursor;
+		event.preventDefault();
+	} else {
+		tmpArr[--indexOfCursor] = '_';
+		let str = tmpArr.join('');
+		elem.value = str;
+		elem.selectionStart = elem.selectionEnd = indexOfCursor;
+	}
+}
+
+function getCaretPos(obj) {
+	//obj.focus();
+
+	if (obj.selectionStart) return obj.selectionStart;
+	else if (document.selection) {
+		let sel = document.selection.createRange();
+		let clone = sel.duplicate();
+		sel.collapse(true);
+		clone.moveToElementText(obj);
+		clone.setEndPoint('EndToEnd', sel);
+		return clone.text.length;
+	}
+
+	return 0;
+}
+
+function special4Bool(literal) {
+	if (literal == '(') return true;
+	else if (literal == ')') return true;
+	else if (literal == ' ') return true;
+	else if (literal == '-') return true;
+	else return false;
 }
